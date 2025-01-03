@@ -1,17 +1,19 @@
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
+import connectDB from './db/connectDB';
+import { app, httpServer } from './socket/socket';
+import cookieParser from "cookie-parser"
 
 dotenv.config();
+app.use(express.json());
+app.use(cookieParser());
 
-const app = express();
-const port = process.env.PORT || 8000;
+connectDB();
 
-app.get('/', (req: Request, res: Response) => {
-  res.json({
-    data: 'Express + TypeScript Server',
-  });
-});
+const port = process.env.PORT || 8080;
 
-app.listen(port, () => {
+
+
+httpServer.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
 });
