@@ -1,0 +1,7 @@
+{
+    "watch": ["backend/src"],
+    "ext": "ts",
+    "ignore": ["node_modules"],
+    "exec": "ts-node ./backend/src/index.ts"
+  }
+  

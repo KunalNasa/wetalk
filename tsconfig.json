@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "./backend/dist",       /* Output directory for compiled files */
+    "rootDir": "./backend/src"        /* Root directory for TypeScript files */
+  },
+  "include": ["backend/src/**/*"],    /* Include all files in the backend/src folder */
+  "exclude": ["node_modules"]         /* Exclude node_modules folder */
+}
