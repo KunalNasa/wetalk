@@ -3,11 +3,12 @@ import {Request, Response, NextFunction} from "express"
 import { ApiResponse, ErrorResponse } from "../types/response";
 import Status from "../types/statusCodes";
 import userModel from "../models/user.model";
+
 const protectRoute = async (req: Request, res: Response, next: NextFunction) : Promise<any> => {
     try {
         const token = req.cookies.jwt;
         if(!token){
-            const response : ApiResponse<null> = {
+            const response : ErrorResponse = {
                 success : false,
                 message : "Unauthorised request",
             } 
@@ -15,7 +16,7 @@ const protectRoute = async (req: Request, res: Response, next: NextFunction) : P
         }
         const verifyToken = jwt.verify(token, process.env.JWT_SECRET as string);
         if(!verifyToken){
-            const response : ApiResponse<null> = {
+            const response : ErrorResponse = {
                 success : false,
                 message : "Verification failed! Unauthorised request"
             }
@@ -23,7 +24,7 @@ const protectRoute = async (req: Request, res: Response, next: NextFunction) : P
         }
         const user = await userModel.findById((verifyToken as jwt.JwtPayload).userId).select("-password");
         if (!user) {
-            const response: ApiResponse<null> = {
+            const response: ErrorResponse = {
                 success: false,
                 message: "User not found"
             };

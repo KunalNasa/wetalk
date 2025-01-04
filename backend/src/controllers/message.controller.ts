@@ -1,5 +1,5 @@
 import {Request, Response} from "express"
-import { ApiResponse } from "../types/response";
+import { ApiResponse, ErrorResponse } from "../types/response";
 import Status from "../types/statusCodes";
 import MessageModel from "../models/message.model";
 import conversationModel from "../models/conversation.model";
@@ -13,7 +13,7 @@ export const sendMessage = async (req : Request, res : Response) : Promise<any> 
     const receiverId = req.params.id; // or const {id} = req.params;
     const { message } = req.body; // or const message = req.body.message;
     if(!senderId || !receiverId || !message){
-        const response: ApiResponse<null> = {
+        const response: ErrorResponse = {
             success : false,
             message : "Invalid Request"
         }
@@ -26,9 +26,10 @@ export const sendMessage = async (req : Request, res : Response) : Promise<any> 
             message
         })
         if(!sendMessage){
-            const response : ApiResponse<null> = {
+            const response : ApiResponse<string> = {
                 success: false,
-                message : "Failed to send m"
+                message : "Failed to send m",
+                data : message
             }
             return res.status(Status.INTERNAL_SERVER_ERROR).json(response);
         }
@@ -54,7 +55,7 @@ export const sendMessage = async (req : Request, res : Response) : Promise<any> 
         }
         return res.status(Status.CREATED).json(response);
     } catch (error : any) {
-        const response : ApiResponse<null> = {
+        const response : ErrorResponse = {
             success : false,
             message : error.message
         };
@@ -64,7 +65,7 @@ export const sendMessage = async (req : Request, res : Response) : Promise<any> 
 
 export const getMessages = async (req : Request, res : Response) : Promise<any> =>{
     const receiverId = req.params.id;
-    const senderId = req.user?.id;
+    const senderId = req.user?._id;
     if(!senderId || !receiverId){
         const response: ApiResponse<null> = {
             success : false,
@@ -78,7 +79,7 @@ export const getMessages = async (req : Request, res : Response) : Promise<any> 
         }).populate<{ messages: MessageSchema[] }>("messages");
 
         if(!conversation){
-            const response : ApiResponse<null> = {
+            const response : ErrorResponse = {
                 success : false,
                 message : "Conversation Not Found"
             };
@@ -101,5 +102,4 @@ export const getMessages = async (req : Request, res : Response) : Promise<any> 
         };
         return res.status(Status.INTERNAL_SERVER_ERROR).json(response);
     }
-    
 }
