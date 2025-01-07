@@ -28,7 +28,7 @@ export const sendMessage = async (req : Request, res : Response) : Promise<any> 
         if(!sendMessage){
             const response : ApiResponse<string> = {
                 success: false,
-                message : "Failed to send m",
+                message : "Failed to send message",
                 data : message
             }
             return res.status(Status.INTERNAL_SERVER_ERROR).json(response);
@@ -36,13 +36,16 @@ export const sendMessage = async (req : Request, res : Response) : Promise<any> 
         let conversation = await conversationModel.findOne({
             participants : {$all : [senderId, receiverId]}
         });
-
+        // console.log("conversation : ", conversation);
         if(!conversation){
             conversation = await conversationModel.create({
                 participants : [senderId, receiverId]
             })
         }
-        conversation.messages?.push(new mongoose.Schema.Types.ObjectId(sendMessage._id));
+        // console.log("Hey");
+        // console.log(typeof sendMessage._id);
+        conversation.messages?.push(sendMessage._id);
+        // console.log("Hello");
         await conversation.save();
         const receiverSocketId = getSocketIdCorrespondingToUserId(receiverId);
         if(receiverSocketId !== ""){
@@ -55,6 +58,7 @@ export const sendMessage = async (req : Request, res : Response) : Promise<any> 
         }
         return res.status(Status.CREATED).json(response);
     } catch (error : any) {
+        console.log(error);
         const response : ErrorResponse = {
             success : false,
             message : error.message
@@ -64,8 +68,8 @@ export const sendMessage = async (req : Request, res : Response) : Promise<any> 
 }
 
 export const getMessages = async (req : Request, res : Response) : Promise<any> =>{
-    const receiverId = req.params.id;
-    const senderId = req.user?._id;
+    const receiverId = req.params.id.toString();
+    const senderId = req.user?._id.toString();
     if(!senderId || !receiverId){
         const response: ApiResponse<null> = {
             success : false,
@@ -74,14 +78,16 @@ export const getMessages = async (req : Request, res : Response) : Promise<any> 
         return res.status(Status.BAD_REQUEST).json(response);
     }
     try {
+        console.log(senderId, " ", receiverId);
         const conversation = await conversationModel.findOne({
             participants : { $all : [senderId, receiverId] }
         }).populate<{ messages: MessageSchema[] }>("messages");
-
+        console.log(conversation);
         if(!conversation){
-            const response : ErrorResponse = {
-                success : false,
-                message : "Conversation Not Found"
+            const response : ApiResponse<[]> = {
+                success : true,
+                message : "Conversation Not Found",
+                data : []
             };
             return res.status(Status.BAD_REQUEST).json(response);
         }

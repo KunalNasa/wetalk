@@ -6,7 +6,7 @@ import cookieParser from "cookie-parser"
 import userRoutes from "./routes/user.route"
 import authRoutes from "./routes/auth.route"
 import messageRoutes from "./routes/message.route"
-import req from "./types/req"
+// import req from "./types/req"
 
 
 dotenv.config();
@@ -17,9 +17,9 @@ connectDB();
 
 const port = process.env.PORT || 8080;
 
-app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/messages', messageRoutes);
+app.use('/api/users', userRoutes);
 
 httpServer.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);

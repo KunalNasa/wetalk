@@ -9,7 +9,7 @@ export interface UserSchema extends Document{
     profilePic : string,
 }
 export interface MessageSchema extends Document{
-    _id : string,
+    _id : mongoose.Schema.Types.ObjectId,
     senderId: mongoose.Schema.Types.ObjectId;
     receiverId: mongoose.Schema.Types.ObjectId;
     message: string; 

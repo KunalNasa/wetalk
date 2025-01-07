@@ -60,6 +60,7 @@ export const signup = async (req : Request, res : Response) : Promise<any> =>{
                 gender : newUser.gender,
                 profilePic : newUser.profilePic
             }
+            generateTokenAndSetCookie(res, newUser._id);
             const successResponse : SuccessResponse<requestUser> = {
                 success : true,
                 message : "Account created successfully",
@@ -81,13 +82,15 @@ export const signup = async (req : Request, res : Response) : Promise<any> =>{
 
 export const login = async (req : Request, res : Response) : Promise<any> =>{
     try {
-        const {emailId, userName, password} = req.body;
+        const {identifier, password} = req.body;
         const user = await userModel.findOne({
             $or : [
-                {emailId : emailId},
-                {userName : userName}
+                {emailId : identifier},
+                {userName : identifier}
             ]
-        }).select("-password");
+        });
+        // console.log(identifier, password);
+        // console.log(user);
         if(!user){
             const response : ErrorResponse = {
                 success : false,
@@ -103,12 +106,20 @@ export const login = async (req : Request, res : Response) : Promise<any> =>{
             }
             return res.status(Status.BAD_REQUEST).json(response);
         }
+        const userData : requestUser = {
+            _id : user.id,
+            userName : user.userName,
+            fullName : user.fullName,
+            emailId : user.emailId,
+            profilePic : user.profilePic,
+            gender : user.gender
+        }
 
         generateTokenAndSetCookie(res, user._id);
         const returnResponse : ApiResponse<requestUser> = {
             success : true,
             message : "Login Successful",
-            data : user
+            data : userData
         }
         return res.status(Status.OK).json(returnResponse);
 
@@ -124,7 +135,12 @@ export const login = async (req : Request, res : Response) : Promise<any> =>{
 export const logout = async (req : Request, res : Response) : Promise<any> =>{
     try {
 		res.cookie("jwt", "", { maxAge: 0 });
-		res.status(200).json({ message: "Logged out successfully" });
+        const response : SuccessResponse<null> = {
+            success : true,
+            message: "Logged out successfully",
+            data : null
+        }
+		res.status(Status.OK).json(response);
 	} catch (error : any) {
         const errorResponse : ErrorResponse = {
             success :false,

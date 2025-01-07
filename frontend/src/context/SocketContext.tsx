@@ -2,7 +2,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import io, { Socket } from "socket.io-client"
 import useAuthStore from "../store/useAuthUser";
-import { authUserType } from "../types/authUser.type";
 
 export const SocketContext = createContext<{ socket: Socket | null, onlineUsers: any[] }>({ socket: null, onlineUsers: [] });
 
@@ -14,7 +13,7 @@ export const useSocketContext = () => {
 export const SocketContextProvider = ({ children }: { children: React.ReactNode }) => {
     const { authUser } = useAuthStore();
     const [socket, setSocket] = useState<Socket | null>(null);
-    const [onlineUsers, setOnlineUsers] = useState<authUserType[] | []>([]);
+    const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
 
     useEffect(() => {
         if (authUser) {

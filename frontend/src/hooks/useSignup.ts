@@ -15,6 +15,8 @@ const useSignup = () => {
     const {setAuthUser} = useAuthStore();
     const signup = async (inputData : inputData) => {
         const success = handleInputErrors(inputData);
+		if (!success) return;
+
         setLoading(true);
         try {
             const {fullName, userName, emailId, password, confirmPassword, gender} = inputData;

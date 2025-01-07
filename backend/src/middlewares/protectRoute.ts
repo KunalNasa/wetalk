@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken"
 import {Request, Response, NextFunction} from "express"
-import { ApiResponse, ErrorResponse } from "../types/response";
+import { ErrorResponse } from "../types/response";
 import Status from "../types/statusCodes";
 import userModel from "../models/user.model";
 
@@ -22,6 +22,7 @@ const protectRoute = async (req: Request, res: Response, next: NextFunction) : P
             }
             return res.status(Status.UNAUTHORIZED).json(response);
         }
+        // console.log(verifyToken);
         const user = await userModel.findById((verifyToken as jwt.JwtPayload).userId).select("-password");
         if (!user) {
             const response: ErrorResponse = {
@@ -31,8 +32,10 @@ const protectRoute = async (req: Request, res: Response, next: NextFunction) : P
             return res.status(Status.UNAUTHORIZED).json(response);
         }
         req.user = user;
+        next();
 
     } catch (error : any) {
+        // console.log(error);
         const response : ErrorResponse = {
             success : false,
             message : error.message 

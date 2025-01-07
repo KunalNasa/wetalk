@@ -5,16 +5,16 @@ import { authUserType } from "../types/authUser.type";
 interface conversationState {
   messages: MessageSchema[] | []
   setMessages: (messages: MessageSchema[] | []) => void;
-  conversation : authUserType | null;
-  setConversation : (conversation : authUserType | null) => void
+  selectedConversation : authUserType | null;
+  setSelectedConversation : (conversation : authUserType | null) => void
 }
 
-const conversationStore = create<conversationState>((set) => ({
+const useConversationStore = create<conversationState>((set) => ({
     messages : [],
     setMessages : (messages) => set({messages}),
-    conversation : null,
-    setConversation : (conversation) => set({conversation})
+    selectedConversation : null,
+    setSelectedConversation : (selectedConversation) => set({selectedConversation})
 
 }))
 
-export default conversationStore;
+export default useConversationStore;
