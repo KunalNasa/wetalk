@@ -88,6 +88,13 @@ export const login = async (req : Request, res : Response) : Promise<any> =>{
                 {userName : userName}
             ]
         }).select("-password");
+        if(!user){
+            const response : ErrorResponse = {
+                success : false,
+                message : "No account exist with this username/Email"
+            }
+            return res.status(Status.BAD_REQUEST).json(response);
+        }
         const isPasswordCorrect = await bcrypt.compare(password, user?.password || "");
         if(!user || !isPasswordCorrect){
             const response : ErrorResponse = {
