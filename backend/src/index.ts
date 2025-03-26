@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser"
 import userRoutes from "./routes/user.route"
 import authRoutes from "./routes/auth.route"
 import messageRoutes from "./routes/message.route"
+import userModel from './models/user.model';
 // import req from "./types/req"
 
 
@@ -16,7 +17,18 @@ app.use(cookieParser());
 connectDB();
 
 const port = process.env.PORT || 8080;
-
+app.get('/dummy', async (req, res) : Promise<any> => {
+  try {
+    const users = await userModel.find();
+    return res.status(200).json({
+      users : users
+    })
+  } catch (error : any) {
+    return res.status(500).json({
+      error : error.message
+    })
+  }
+})
 app.use('/api/auth', authRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/users', userRoutes);

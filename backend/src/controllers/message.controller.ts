@@ -5,7 +5,6 @@ import MessageModel from "../models/message.model";
 import conversationModel from "../models/conversation.model";
 import { getSocketIdCorrespondingToUserId, io } from "../socket/socket";
 import { MessageSchema } from "../types/schemas";
-import mongoose from "mongoose";
 
 
 export const sendMessage = async (req : Request, res : Response) : Promise<any> =>{
