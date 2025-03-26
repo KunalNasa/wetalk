@@ -5,3 +5,7 @@
 - Step 4: Run your backend app connecting to same network `docker run --network chat_app_network --name backend -p 8080:8080 -e MONGODB_URI="mongodb://mongodb:27017/chat_app_db" -e JWT_SECRET=your_JWT_SECRET_here chat_app_backend`
 - Step 5: Build your frontend app using frontend docker file `docker build -t chat_app_frontend -f docker/Dockerfile.frontend .`
 - Step 6: Run your frontend app connecting to same network `docker run --network chat_app_network --name frontend -p 3000:3000 chat_app_frontend`
+
+# Run app using docker compose
+Run `docker compose up`
+

@@ -4,9 +4,6 @@
   "main": "./backend/src/index.js",
   "scripts": {
     "build": "npx tsc",
-    "install:frontend": "cd frontend && npm install",
-    "build:frontend": "cd frontend && npm run build",
-    "start:frontend": "cd frontend && npm start",
     "start": "node ./backend/dist/index.js",
     "dev": "nodemon ./backend/src/index.ts"
   },
