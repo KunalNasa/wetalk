@@ -49,7 +49,8 @@ export const sendMessage = async (req : Request, res : Response) : Promise<any> 
         await conversation.save();
         const receiverSocketId = getSocketIdCorrespondingToUserId(receiverId);
         if(receiverSocketId !== ""){
-            io.to(receiverSocketId).emit("newMessage", {message : sendMessage});
+            console.log("New Message", sendMessage);
+            io.to(receiverSocketId).emit("newMessage", sendMessage);
         }
         const response : ApiResponse<MessageSchema> = {
             success : true,
@@ -78,11 +79,16 @@ export const getMessages = async (req : Request, res : Response) : Promise<any> 
         return res.status(Status.BAD_REQUEST).json(response);
     }
     try {
-        console.log(senderId, " ", receiverId);
+        // console.log(senderId, " ", receiverId);
         const conversation = await conversationModel.findOne({
-            participants : { $all : [senderId, receiverId] }
-        }).populate<{ messages: MessageSchema[] }>("messages");
-        console.log(conversation);
+            participants: { $all: [senderId, receiverId] }
+        }).populate<{ messages: MessageSchema[] }>({
+            path: "messages",
+            select: ["_id", "senderId", "receiverId", "message", "createdAt"]
+        }).lean();
+
+        console.log("My Conversations", conversation);
+
         if(!conversation){
             const response : ApiResponse<[]> = {
                 success : true,

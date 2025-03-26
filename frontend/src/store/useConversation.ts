@@ -11,7 +11,7 @@ interface conversationState {
 
 const useConversationStore = create<conversationState>((set) => ({
     messages : [],
-    setMessages : (messages) => set({messages}),
+    setMessages : (messages) => set({messages : messages ?? []}),
     selectedConversation : null,
     setSelectedConversation : (selectedConversation) => set({selectedConversation})
 

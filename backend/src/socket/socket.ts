@@ -11,24 +11,24 @@ const io = new Server(httpServer, {
     }
 });
 
-const userIdToSocketIdMap: Map<string, string> = new Map();
+const userIdToSocketIdMap: { [key: string]: string } = {};
 
 export const getSocketIdCorrespondingToUserId = (userId: string): string => {
-    return userIdToSocketIdMap.get(userId) || "";
+    return userIdToSocketIdMap[userId] || "";
 }
 
 io.on("connect", (socket) => {
     console.log("User connected with socket id : ", socket.id);
     const userId : string = socket.handshake.query.userId as string;
     if(userId || userId != undefined){
-        userIdToSocketIdMap.set(userId, socket.id);
+        userIdToSocketIdMap[userId] = socket.id;
     }
     io.emit("getOnlineUsers", Object.keys(userIdToSocketIdMap));
 
-    io.on("disconnect", () => {
-        userIdToSocketIdMap.delete(userId);
-        io.emit("getOnlineUsers", Array.from(userIdToSocketIdMap.keys()));
-    })
+    socket.on("disconnect", () => {
+        delete userIdToSocketIdMap[userId];
+        io.emit("getOnlineUsers", Object.keys(userIdToSocketIdMap));
+    });
 })
 
 export {io, app, httpServer};

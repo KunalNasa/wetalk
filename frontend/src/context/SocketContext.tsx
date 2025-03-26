@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import io, { Socket } from "socket.io-client"
 import useAuthStore from "../store/useAuthUser";
 
-export const SocketContext = createContext<{ socket: Socket | null, onlineUsers: any[] }>({ socket: null, onlineUsers: [] });
+export const SocketContext = createContext<{ socket: Socket | null, onlineUsers: string[] }>({ socket: null, onlineUsers: [] });
 
 export const useSocketContext = () => {
     return useContext(SocketContext);
@@ -23,11 +23,11 @@ export const SocketContextProvider = ({ children }: { children: React.ReactNode 
                 }
             });
             setSocket(socketConnection);
-            socket?.on("getOnlineUsers", (users) => {
+            socketConnection?.on("getOnlineUsers", (users) => {
                 setOnlineUsers(users);
             })
             return () => {
-                socket?.close();
+                socketConnection?.close();
             };
         } else {
             if (socket) {

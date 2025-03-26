@@ -24,7 +24,7 @@ const SignUp = () => {
     <div className='flex flex-col bg-white items-center justify-center h-screen mx-auto'>
 			<div className='w-4/12 p-6 rounded-lg shadow-md  bg-clip-padding backdrop-filter backdrop-blur-lg '>
 				<h1 className='text-3xl font-semibold text-center text-gray-300'>
-					Sign Up <span className='text-blue-500'> ChatApp</span>
+					Sign Up <span className='text-green-500'> ChatApp</span>
 				</h1>
         <form onSubmit={handleFormSubmit}>
           <div>

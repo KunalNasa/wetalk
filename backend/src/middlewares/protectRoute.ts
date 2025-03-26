@@ -4,6 +4,8 @@ import { ErrorResponse } from "../types/response";
 import Status from "../types/statusCodes";
 import userModel from "../models/user.model";
 
+// this code is not correct as this is not taking advantage of jwt stateless feature and querying db for each request passed through it.
+// FIX: instead of only adding userId in jwt add all essential but not sensitive details like _id, name, email etc.
 const protectRoute = async (req: Request, res: Response, next: NextFunction) : Promise<any> => {
     try {
         const token = req.cookies.jwt;
