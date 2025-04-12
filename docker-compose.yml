@@ -1,43 +1,36 @@
 version: '3.8'
 
 services:
-  mongoDb:
+  wetalk-be:
+    build: 
+      context: .
+      dockerfile: docker/Dockerfile.dev.be
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongodb
+
+  wetalk-fe:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.dev.fe
+    ports:
+      - "3000:3000"
+    depends_on:
+      - wetalk-be
+
+  mongodb:
     image: mongo
     ports:
       - "27017:27017"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: mongo
-      MONGO_INITDB_ROOT_PASSWORD: mypass
-      MONGO_INITDB_DATABASE: chat_app_db
+      MONGO_INITDB_ROOT_USERNAME: exampleuser
+      MONGO_INITDB_ROOT_PASSWORD: examplepass
     volumes:
       - mongo-data:/data/db  # Persistent storage for MongoDB
-    healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh --quiet --host localhost:27017 --username mongo --password mypass --authenticationDatabase admin
-      interval: 10s
-      retries: 5
-      start_period: 20s
 
-  backend:
-    build: 
-      context: .
-      dockerfile: docker/Dockerfile.backend
-    environment:
-      - MONGODB_URI=mongodb://mongo:mypass@mongoDb:27017/chat_app_db?authSource=admin
-      - JWT_SECRET=q5Ddfdnfjdnfjskn+9kqGYYlh7laqv6NTAQf
-    ports:
-      - "8080:8080"
-    depends_on:
-      mongoDb:
-        condition: service_healthy  # Ensures MongoDB is ready before starting backend
-
-  frontend:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.frontend
-    ports:
-      - "3000:3000"
-    depends_on:
-      - backend
 
 volumes:
   mongo-data:  # Volume for MongoDB to persist data

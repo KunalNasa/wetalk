@@ -9,7 +9,7 @@ export default defineConfig({
     proxy: {
       '/api': {
         // target: 'http://localhost:8080', //if run mannually
-        target: 'http://backend:8080', // for docker
+        target: 'http://wetalk-be:8080', // for docker
         changeOrigin: true,
         secure: false
       }

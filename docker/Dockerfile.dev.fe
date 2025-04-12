@@ -1,0 +1,22 @@
+FROM node:23-alpine
+
+# Set the working directory for the frontend app
+WORKDIR /app
+
+# Copy package.json and package-lock.json to the correct directory
+COPY ./frontend/package.json ./frontend/package-lock.json ./frontend/
+
+# Set the working directory for the frontend (now inside /app/frontend)
+WORKDIR /app/frontend
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the frontend code into the container
+COPY ./frontend /app/frontend
+
+# Expose port 3000
+EXPOSE 3000
+
+# Start the development server and bind it to 0.0.0.0 to make it accessible on the network
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
