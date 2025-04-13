@@ -3,10 +3,14 @@ FROM node:23-alpine
 WORKDIR /app
 
 COPY ./package.json ./package.json
+COPY ./package-lock.json ./package-lock.json
 
 RUN npm install
 
-COPY . .
+COPY ./backend ./backend
+
+COPY ./nodemon.json ./nodemon.json
+COPY ./tsconfig.json ./tsconfig.json
 
 RUN npm run build
 
